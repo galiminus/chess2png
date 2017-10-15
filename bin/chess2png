@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'chess'
+require 'chess2png'
+require 'optparse'
+
+options = {}
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: chess2png -i input -o output"
+
+  opts.on("-i", "--input PATH", "Path to a PGN file") do |input|
+    options[:input] = input
+  end
+
+  opts.on("-o", "--output PATH", "Path where the resulting PNG file will be saved") do |output|
+    options[:output] = output
+  end
+end
+
+begin
+  optparse.parse!
+
+  # from https://stackoverflow.com/a/2149183
+  mandatory = [:input, :output]
+  missing = mandatory.select{ |param| options[param].nil? }
+  unless missing.empty?
+    raise OptionParser::MissingArgument.new(missing.join(", "))
+  end
+
+  Chess2PNG.new.encode(Chess::Game.load_pgn(options[:input]).current).save(options[:output])
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument
+  puts $!.to_s
+  puts optparse
+  exit 1
+end
