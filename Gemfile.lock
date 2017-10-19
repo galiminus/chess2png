@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    chess2png (0.0.1)
+    chess2png (0.0.2)
       chess (~> 0.2.0)
       chunky_png (~> 1.3.8)
 
